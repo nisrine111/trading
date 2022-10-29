@@ -1,13 +1,13 @@
 from AlgorithmImports import *
 
-class FormalFluorescentYellowArmadillo(QCAlgorithm):
+class Strategy2(QCAlgorithm):
     def Initialize(self):
-        self.SetStartDate(2020, 1, 1)  # Set Start Date
-        self.SetEndDate(2021, 1, 1)  # Set End Date
-        self.SetCash(100000)  # Set Strategy Cash
+        self.SetStartDate(2020, 1, 1) 
+        self.SetEndDate(2021, 1, 1) 
+        self.SetCash(100000)  
 
         spy = self.AddEquity("SPY", Resolution.Daily)
-        # self.AddForex, self.AddFuture...
+        
 
         spy.SetDataNormalizationMode(DataNormalizationMode.Raw)
 
@@ -19,21 +19,18 @@ class FormalFluorescentYellowArmadillo(QCAlgorithm):
         )
 
         self.entryPrice = 0
-        self.period = timedelta(31)
+        self.period = timedelta(40)
         self.nextEntryTime = self.Time
 
     def OnData(self, data):
         if not self.spy in data:
             return
-
-        # price = data.Bars[self.spy].Close
         price = data[self.spy].Close
-        # price = self.Securities[self.spy].Close
-
+       
         if not self.Portfolio.Invested:
             if self.nextEntryTime <= self.Time:
                 self.SetHoldings(self.spy, 1)
-                # self.MarketOrder(self.spy, int(self.Portfolio.Cash / price) )
+                
                 self.Log("BUY SPY @" + str(price))
                 self.entryPrice = price
 
