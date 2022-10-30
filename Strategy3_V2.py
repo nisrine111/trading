@@ -8,13 +8,7 @@ class startegy3(QCAlgorithm):
         self.SetEndDate(2022, 1, 1)
         self.SetCash(100000)
         self.spy = self.AddEquity("SPY", Resolution.Daily).Symbol
-        # self.sma=self.SMA(self.spy,30,Resolution.Daily)
-        # self.SetWarmUp(timedelta(30))
-        # give necessary data from past 30 days
-        # closing_prices= self.History(self.spy,30, Resolution.Daily)["close"]
-
-        # for time , price in closing_prices.loc[self.spy].items():
-        #    self.sma.Update(time, price)
+       
         self.sma = CustomSimpleMovingAverage("simple moving average customized", 30)
         self.RegisterIndicator(self.spy, self.sma, Resolution.Daily)
 
@@ -25,15 +19,14 @@ class startegy3(QCAlgorithm):
         high = max(history["high"])
         low = min(history["low"])
         price = self.Securities[self.spy].Price
-
-        # if there s an uptrend and we re near high we adopt long position
+       
         if price * 1.05 >= high and price > self.sma.Current.Value:
             if not self.Portfolio[self.spy].IsLong:
                 self.SetHoldings(self.spy, 1)
 
         elif price * 0.9 < low and price < self.sma.Current.Value:
             if not self.Portfolio[self.spy].IsShort:
-                self.SetHoldings(self.spy, -1)  # selling market order
+                self.SetHoldings(self.spy, -1)  
 
         else:
             self.Liquidate()
